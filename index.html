@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>GREEN-API Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      margin: 20px;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+    }
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 300px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .right-panel {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 5px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 8px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    textarea {
+      resize: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Левая панель -->
+    <div class="left-panel">
+      <input id="idInstance" placeholder="Введите ID Instance">
+
+      <input id="apiToken" placeholder="Введите API Token">
+
+      <!-- Кнопки get -->
+      <button onclick="getSettings()">getSettings</button>
+      <button onclick="getStateInstance()">getStateInstance</button>
+
+      <!-- Окошки для sendMessage -->
+      <input id="chatIdMessage" placeholder="Номер получателя">
+
+      <textarea id="messageText" rows="2" placeholder="Текст сообщения"></textarea>
+
+      <button onclick="sendMessage()">sendMessage</button>
+
+      <!-- Окошки для sendFileByUrl -->
+      <input id="chatIdFile" placeholder="Номер получателя">
+
+      <input id="fileUrl" placeholder="Ссылка на файл">
+
+      <button onclick="sendFileByUrl()">sendFileByUrl</button>
+    </div>
+
+    <!-- Правая панель -->
+    <div class="right-panel">
+      <label>Ответ:</label>
+      <textarea id="output" rows="50" cols="60" readonly></textarea>
+    </div>
+  </div>
+
+  <script>
+    const output = document.getElementById('output');
+
+    function getValues() {
+      return {
+        id: document.getElementById('idInstance').value,
+        token: document.getElementById('apiToken').value
+      };
+    }
+
+    function getSettings() {
+      const { id, token } = getValues();
+      fetch(`https://api.green-api.com/waInstance${id}/getSettings/${token}`)
+        .then(res => res.json())
+        .then(data => output.value = JSON.stringify(data, null, 2))
+        .catch(err => output.value = err);
+    }
+
+    function getStateInstance() {
+      const { id, token } = getValues();
+      fetch(`https://api.green-api.com/waInstance${id}/getStateInstance/${token}`)
+        .then(res => res.json())
+        .then(data => output.value = JSON.stringify(data, null, 2))
+        .catch(err => output.value = err);
+    }
+
+    function sendMessage() {
+      const { id, token } = getValues();
+      const body = {
+        chatId: document.getElementById('chatIdMessage').value,
+        message: document.getElementById('messageText').value
+      };
+      fetch(`https://api.green-api.com/waInstance${id}/sendMessage/${token}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      })
+      .then(res => res.json())
+      .then(data => output.value = JSON.stringify(data, null, 2))
+      .catch(err => output.value = err);
+    }
+
+    function sendFileByUrl() {
+      const { id, token } = getValues();
+      const body = {
+        chatId: document.getElementById('chatIdFile').value,
+        fileUrl: document.getElementById('fileUrl').value,
+        caption: document.getElementById('fileCaption').value
+      };
+      fetch(`https://api.green-api.com/waInstance${id}/sendFileByUrl/${token}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      })
+      .then(res => res.json())
+      .then(data => output.value = JSON.stringify(data, null, 2))
+      .catch(err => output.value = err);
+    }
+  </script>
+</body>
+</html>
