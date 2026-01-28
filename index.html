@@ -125,11 +125,19 @@
 
     function sendFileByUrl() {
       const { id, token } = getValues();
+      const chatId: document.getElementById('chatIdFile').value;
+      const fileUrl: document.getElementById('fileUrl').value;
+      
+      if (!chatId || !fileUrl) {
+        output.value = "Заполните оба поля: Номер получателя и Ссылка на файл.";
+        return;
+      }
+
       const body = {
-        chatId: document.getElementById('chatIdFile').value,
-        fileUrl: document.getElementById('fileUrl').value,
-        caption: document.getElementById('fileCaption').value
+        chatId: chatId,
+        urlFile: fileUrl
       };
+
       fetch(`https://api.green-api.com/waInstance${id}/sendFileByUrl/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -137,7 +145,7 @@
       })
       .then(res => res.json())
       .then(data => output.value = JSON.stringify(data, null, 2))
-      .catch(err => output.value = err);
+      .catch(err => output.value = "Ошибка выполнения запроса.\n" + "Причина: ограничение CORS.\n\n" + err);
     }
   </script>
 </body>
