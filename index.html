@@ -125,8 +125,8 @@
 
     function sendFileByUrl() {
       const { id, token } = getValues();
-      const chatId: document.getElementById('chatIdFile').value;
-      const fileUrl: document.getElementById('fileUrl').value;
+      const chatId = document.getElementById('chatIdFile').value;
+      const fileUrl = document.getElementById('fileUrl').value;
       
       if (!chatId || !fileUrl) {
         output.value = "Заполните оба поля: Номер получателя и Ссылка на файл.";
